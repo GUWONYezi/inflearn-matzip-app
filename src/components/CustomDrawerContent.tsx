@@ -6,7 +6,7 @@ import {
 import React from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {colors} from '../constants/colors';
+import {colors} from '@/constants/colors';
 
 function CustomDrawerContent(props: DrawerContentComponentProps) {
   return (
@@ -18,7 +18,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
         <Pressable style={styles.profileContainer}>
           <View style={styles.userImageConainer}>
             <Image
-              source={require('../assets/default-user.png')}
+              source={require('@/assets/default-user.png')}
               style={styles.userImage}
             />
           </View>
