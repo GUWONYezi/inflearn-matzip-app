@@ -1,15 +1,17 @@
 import React from 'react';
 import {StyleSheet, Text} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import DrawerButton from '@/components/DrawerButton';
 
-function LoginScreen() {
+function MapHomeScreen() {
   return (
     <SafeAreaView>
-      <Text>LoginScreen</Text>
+      <DrawerButton />
+      <Text>MapHomeScreen</Text>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({});
 
-export default LoginScreen;
+export default MapHomeScreen;
