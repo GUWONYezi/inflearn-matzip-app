@@ -1,32 +1,57 @@
 import CustomButton from '@/components/CustomButton';
 import InputField from '@/components/InputField';
 import useForm from '@/hook/useForm';
-import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {validateLogin} from '@/utils/validation';
+import React, {useRef} from 'react';
+import {StyleSheet, TextInput, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 function LoginScreen() {
+  const passwordRef = useRef<TextInput | null>(null);
+
   const login = useForm({
     initiaValue: {email: '', password: ''},
+    validate: validateLogin,
   });
+
+  // 로그인 제출
+  const handleSubmit = () => {
+    console.log('login.values', login.values);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.inputContainer}>
         <InputField
+          autoFocus
           placeholder="이메일"
           touched={login.touched.email}
+          error={login.errors.email}
+          submitBehavior="submit"
+          returnKeyType="next"
+          inputMode="email"
+          onSubmitEditing={() => passwordRef.current?.focus()}
           {...login.getTextInputProps('email')}
         />
         <InputField
+          ref={passwordRef}
           placeholder="비밀번호"
           touched={login.touched.password}
+          error={login.errors.password}
+          maxLength={20}
+          returnKeyType="join"
           secureTextEntry
           textContentType="oneTimeCode"
+          onSubmitEditing={handleSubmit}
           {...login.getTextInputProps('password')}
         />
       </View>
-      <CustomButton label="로그인" variant="filled" size="large" />
+      <CustomButton
+        label="로그인"
+        variant="filled"
+        size="large"
+        onPress={handleSubmit}
+      />
     </SafeAreaView>
   );
 }
