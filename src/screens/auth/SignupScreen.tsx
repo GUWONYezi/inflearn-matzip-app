@@ -1,5 +1,6 @@
 import CustomButton from '@/components/CustomButton';
 import InputField from '@/components/InputField';
+import useAuth from '@/hook/queries/useAuth';
 import useForm from '@/hook/useForm';
 import {validateSignup} from '@/utils/validation';
 import {useRef} from 'react';
@@ -7,6 +8,7 @@ import {StyleSheet, TextInput, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 function SignupScreen() {
+  const {signupMutation, loginMutation} = useAuth();
   const passwordRef = useRef<TextInput | null>(null);
   const passwordConfirmRef = useRef<TextInput | null>(null);
 
@@ -17,7 +19,15 @@ function SignupScreen() {
 
   // 회원가입 제출
   const handleSubmit = () => {
-    console.log('singup.values', singup.values);
+    const {email, password} = singup.values;
+
+    signupMutation.mutate(
+      {email, password},
+      {
+        // 회원가입 성공 시, 자동로그인
+        onSuccess: () => loginMutation.mutate({email, password}),
+      },
+    );
   };
 
   return (
