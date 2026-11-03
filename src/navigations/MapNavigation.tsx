@@ -26,6 +26,12 @@ export const MapStack = createStackNavigator({
     },
     AddLocation: {
       screen: AddLocationsScreen,
+      options: {
+        title: '장소 추가',
+        cardStyle: {
+          backgroundColor: colors.WHITE,
+        },
+      },
     },
     SearchLoaction: {
       screen: SearchLoactionScreen,

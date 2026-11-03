@@ -41,4 +41,18 @@ function validateSignup(
   return signupErrors;
 }
 
-export {validateLogin, validateSignup};
+// 위치추가 폼 유효성 체크
+function validateAddPost(values: {title: string}) {
+  const erros = {
+    title: '',
+    description: '',
+  };
+
+  if (values.title.trim() === '') {
+    erros.title = '제목은 1~30자 이내로 입력해주세요.';
+  }
+
+  return erros;
+}
+
+export {validateLogin, validateSignup, validateAddPost};

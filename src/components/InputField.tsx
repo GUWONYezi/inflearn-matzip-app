@@ -6,17 +6,31 @@ interface InputFieldProps extends TextInputProps {
   ref?: Ref<TextInput>;
   error?: string;
   touched?: boolean;
+  disabed?: boolean;
 }
 
-function InputField({ref, error, touched, ...props}: InputFieldProps) {
+function InputField({
+  ref,
+  error,
+  touched,
+  disabed = false,
+  ...props
+}: InputFieldProps) {
   return (
     <View>
       <TextInput
         ref={ref}
+        placeholderTextColor={colors.GRAY_500}
         autoCapitalize="none"
         spellCheck={false}
         autoCorrect={false}
-        style={[styles.input, touched && Boolean(error) && styles.inputError]}
+        style={[
+          styles.input,
+          disabed && styles.disabed,
+          props.multiline && styles.multiLine,
+          touched && Boolean(error) && styles.inputError,
+        ]}
+        editable={!disabed}
         {...props}
       />
       {touched && Boolean(error) && <Text style={styles.error}>{error}</Text>}
@@ -34,6 +48,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.BLACK,
   },
+  multiLine: {
+    height: 150,
+    paddingVertical: 10,
+    textAlignVertical: 'top',
+  },
   inputError: {
     borderWidth: 1,
     borderColor: colors.RED_300,
@@ -42,6 +61,10 @@ const styles = StyleSheet.create({
     color: colors.RED_500,
     fontSize: 12,
     paddingTop: 5,
+  },
+  disabed: {
+    backgroundColor: colors.GRAY_200,
+    color: colors.GRAY_700,
   },
 });
 
