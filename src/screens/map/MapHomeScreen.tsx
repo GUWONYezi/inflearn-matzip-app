@@ -15,6 +15,7 @@ import MapIconButton from '@/components/MapIconButton';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {MapStackParamList} from '@/types/navigation';
+import useGetMarkers from '@/hook/queries/useGetMarkers';
 
 type Navigation = StackNavigationProp<MapStackParamList>;
 
@@ -34,6 +35,9 @@ function MapHomeScreen() {
 
   // 지도 이동 hook
   const {mapRef, moveMapView, handleChangeDelta} = useMoveMapView();
+
+  // 마커 목록 조회 정보
+  const {data: markers = []} = useGetMarkers();
 
   // 하단 좌표 이동 버튼 핸들러
   const handlePressUserLocation = () => {
@@ -61,6 +65,8 @@ function MapHomeScreen() {
     }
 
     navigation.navigate('AddLocation', {location: selectLocation});
+
+    setSelectLocation(null);
   };
 
   // 마커 클릭 이벤트
@@ -92,32 +98,13 @@ function MapHomeScreen() {
           // 꾹 누를 경우, 선택 장소에 마커 표시
           setSelectLocation(nativeEvent.coordinate)
         }>
-        {[
-          {
-            id: 1,
-            color: colors.PINK_400,
-            score: 3,
-            coordinate: {
-              latitude: 37.5516032365118,
-              longitude: 126.98989626020192,
-            },
-          },
-          {
-            id: 2,
-            color: colors.YELLOW_400,
-            score: 5,
-            coordinate: {
-              latitude: 37.5416032365118,
-              longitude: 126.97989626020192,
-            },
-          },
-        ].map(marker => (
+        {markers.map(({id, color, score, ...coordinate}) => (
           <CustomMarker
-            key={marker.id}
-            color={marker.color}
-            score={marker.score}
-            coordinate={marker.coordinate}
-            onPress={() => handlePressMarker(marker.coordinate)}
+            key={id}
+            color={color}
+            score={score}
+            coordinate={coordinate}
+            onPress={() => handlePressMarker(coordinate)}
           />
         ))}
         {selectLocation && <Marker coordinate={selectLocation} />}

@@ -46,6 +46,9 @@ function validateAddPost(values: {title: string}) {
   const erros = {
     title: '',
     description: '',
+    date: '',
+    color: '',
+    score: '',
   };
 
   if (values.title.trim() === '') {

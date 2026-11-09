@@ -12,8 +12,8 @@ function useForm<T>({initiaValue, validate}: UseFormProps<T>) {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleChangeValue = (name: keyof T, text: string) => {
-    setValues(prev => ({...prev, [name]: text}));
+  const handleChangeValue = (name: keyof T, value: string | number | Date) => {
+    setValues(prev => ({...prev, [name]: value}));
   };
 
   const handleBlur = (name: keyof T) => {
@@ -22,7 +22,7 @@ function useForm<T>({initiaValue, validate}: UseFormProps<T>) {
 
   // input 공통 props 하나로 묶어서 처리
   const getTextInputProps = (name: keyof T) => {
-    const value = values[name];
+    const value = values[name] as string;
     const onChangeText = (text: string) => handleChangeValue(name, text);
     const onBlur = () => handleBlur(name);
 
@@ -35,7 +35,13 @@ function useForm<T>({initiaValue, validate}: UseFormProps<T>) {
     setErrors(newErrors);
   }, [validate, values]);
 
-  return {values, touched, errors, getTextInputProps};
+  return {
+    values,
+    touched,
+    errors,
+    onChage: handleChangeValue,
+    getTextInputProps,
+  };
 }
 
 export default useForm;
