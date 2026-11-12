@@ -1,32 +1,40 @@
 import {colors} from '@/constants/colors';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {LatLng, MapMarkerProps, Marker} from 'react-native-maps';
+import {LatLng, Marker, MyMapMarkerProps} from 'react-native-maps';
 
-interface CustomMarkerProps extends MapMarkerProps {
-  coordinate: LatLng;
+interface CustomMarkerProps extends MyMapMarkerProps {
+  coordinate?: LatLng;
   color: string;
   score?: number;
 }
 
+// Marker 컴포넌트 커스텀
 function CustomMarker({
   coordinate,
   color,
   score = 5,
   ...props
 }: CustomMarkerProps) {
-  return (
-    <Marker coordinate={coordinate} {...props}>
-      <View style={styles.container}>
-        <View style={[styles.marker, {backgroundColor: color}]}>
-          <View style={[styles.eye, styles.leftEye]} />
-          <View style={[styles.eye, styles.rightEye]} />
-          {score > 3 && <View style={[styles.mouth, styles.good]} />}
-          {score === 3 && <View style={[styles.soso]} />}
-          {score < 3 && <View style={[styles.mouth, styles.bad]} />}
-        </View>
+  const markerView = (
+    <View style={styles.container}>
+      <View style={[styles.marker, {backgroundColor: color}]}>
+        <View style={[styles.eye, styles.leftEye]} />
+        <View style={[styles.eye, styles.rightEye]} />
+        {score > 3 && <View style={[styles.mouth, styles.good]} />}
+        {score === 3 && <View style={[styles.soso]} />}
+        {score < 3 && <View style={[styles.mouth, styles.bad]} />}
       </View>
+    </View>
+  );
+
+  // 위치정보(coordinate)가 넘어왔을 경우와 넘어오지 않았을 경우 구분
+  return coordinate ? (
+    <Marker coordinate={coordinate} {...props}>
+      {markerView}
     </Marker>
+  ) : (
+    markerView
   );
 }
 
