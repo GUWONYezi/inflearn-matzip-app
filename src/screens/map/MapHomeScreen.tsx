@@ -1,32 +1,35 @@
-import DrawerButton from '@/components/DrawerButton';
+import CustomMarker from '@/components/common/CustomMarker';
+import DrawerButton from '@/components/common/DrawerButton';
+import MapIconButton from '@/components/map/MapIconButton';
+import MarkerModal from '@/components/map/MarkerModal';
 import {colors} from '@/constants/colors';
-import React, {useState} from 'react';
-import {Alert, StyleSheet, View} from 'react-native';
-import MapView, {LatLng, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useUserLocation} from '@/hook/useUserLocation';
 import {numbers} from '@/constants/numbers';
-import {usePermission} from '@/hook/usePermission';
-import Toast from 'react-native-toast-message';
-import CustomMarker from '@/components/CustomMarker';
-import Config from 'react-native-config';
+import useGetMarkers from '@/hook/queries/useGetMarkers';
+import useModal from '@/hook/useModal';
 import {useMoveMapView} from '@/hook/useMoveMapView';
-import MapIconButton from '@/components/MapIconButton';
+import {usePermission} from '@/hook/usePermission';
+import {useUserLocation} from '@/hook/useUserLocation';
+import {MapStackParamList} from '@/types/navigation';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {MapStackParamList} from '@/types/navigation';
-import useGetMarkers from '@/hook/queries/useGetMarkers';
+import React, {useState} from 'react';
+import {Alert, StyleSheet, View} from 'react-native';
+import Config from 'react-native-config';
+import MapView, {LatLng, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
 
 type Navigation = StackNavigationProp<MapStackParamList>;
 
 function MapHomeScreen() {
+  //#region 기본값
   const navigation = useNavigation<Navigation>();
-
   const inset = useSafeAreaInsets();
-
   // 권한 체크
   usePermission('LOCATION');
+  //#endregion
 
+  //#region 사용자 변수
   // 사용자 현재 위치
   const {userLocation, isUserLoactionError} = useUserLocation();
 
@@ -39,6 +42,14 @@ function MapHomeScreen() {
   // 마커 목록 조회 정보
   const {data: markers = []} = useGetMarkers();
 
+  // 클릭한 마커ID
+  const [markerId, setMarkerId] = useState<number>(0);
+
+  // 마커 모달
+  const markerModal = useModal();
+  //#endregion
+
+  //#region 이벤트 핸들러
   // 하단 좌표 이동 버튼 핸들러
   const handlePressUserLocation = () => {
     if (isUserLoactionError) {
@@ -70,9 +81,12 @@ function MapHomeScreen() {
   };
 
   // 마커 클릭 이벤트
-  const handlePressMarker = (coordinate: LatLng) => {
+  const handlePressMarker = (coordinate: LatLng, id: number) => {
     moveMapView(coordinate);
+    setMarkerId(id);
+    markerModal.show();
   };
+  //#endregion
 
   return (
     <>
@@ -104,7 +118,7 @@ function MapHomeScreen() {
             color={color}
             score={score}
             coordinate={coordinate}
-            onPress={() => handlePressMarker(coordinate)}
+            onPress={() => handlePressMarker(coordinate, id)}
           />
         ))}
         {selectLocation && <Marker coordinate={selectLocation} />}
@@ -116,6 +130,12 @@ function MapHomeScreen() {
           onPress={handlePressUserLocation}
         />
       </View>
+
+      <MarkerModal
+        markerId={markerId}
+        isVisible={markerModal.isVisible}
+        hide={markerModal.hide}
+      />
     </>
   );
 }

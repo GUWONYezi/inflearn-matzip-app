@@ -9,9 +9,14 @@ import {ScrollView} from 'react-native-gesture-handler';
 interface PreviewImageListProps {
   imageUris: ImageUri[];
   onDelete?: (uri: String) => void;
+  showDeleteButton?: boolean;
 }
 
-function PreviewImageList({imageUris, onDelete}: PreviewImageListProps) {
+function PreviewImageList({
+  imageUris,
+  onDelete,
+  showDeleteButton = false,
+}: PreviewImageListProps) {
   return (
     <ScrollView horizontal contentContainerStyle={styles.contentContainer}>
       {imageUris.map(({uri}) => {
@@ -26,11 +31,13 @@ function PreviewImageList({imageUris, onDelete}: PreviewImageListProps) {
               }}
               resizeMode="cover"
             />
-            <Pressable
-              style={styles.deleteButton}
-              onPress={() => onDelete?.(uri)}>
-              <Ionicons name="close" size={15} color={colors.WHITE} />
-            </Pressable>
+            {showDeleteButton && (
+              <Pressable
+                style={styles.deleteButton}
+                onPress={() => onDelete?.(uri)}>
+                <Ionicons name="close" size={15} color={colors.WHITE} />
+              </Pressable>
+            )}
           </Pressable>
         );
       })}

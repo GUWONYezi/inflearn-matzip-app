@@ -4,8 +4,8 @@ import React, {useEffect} from 'react';
 import {Image, Pressable, StyleSheet, Text, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {AuthStackParamList} from '@/types/navigation';
-import CustomButton from '@/components/CustomButton';
 import {colors} from '@/constants/colors';
+import CustomButton from '@/components/common/CustomButton';
 
 type Navigation = StackNavigationProp<AuthStackParamList>;
 

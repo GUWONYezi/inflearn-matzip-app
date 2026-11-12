@@ -1,27 +1,25 @@
-import CustomButton from '@/components/CustomButton';
-import FixedBottomCTA from '@/components/FixedBottomCTA';
-import ImageInput from '@/components/ImageInput';
-import InputField from '@/components/InputField';
-import MarkerColorInput from '@/components/MarkerColorInput';
-import ScoreInput from '@/components/ScoreInput';
+import CustomButton from '@/components/common/CustomButton';
+import FixedBottomCTA from '@/components/common/FixedBottomCTA';
+import InputField from '@/components/common/InputField';
+import PreviewImageList from '@/components/common/PreviewImageList';
+import ImageInput from '@/components/post/ImageInput';
+import MarkerColorInput from '@/components/post/MarkerColorInput';
+import ScoreInput from '@/components/post/ScoreInput';
 import {colors} from '@/constants/colors';
+import useMutateCreatePost from '@/hook/queries/useMutateCreatePost';
 import useForm from '@/hook/useForm';
 import {useGetAddress} from '@/hook/useGetAddress';
+import useImagePicker from '@/hook/useImagePicker';
+import {usePermission} from '@/hook/usePermission';
 import {MapStackParamList} from '@/types/navigation';
 import {getDateWithSeparator} from '@/utils/date';
 import {validateAddPost} from '@/utils/validation';
+import {useNavigation} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import React, {useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {usePermission} from '@/hook/usePermission';
-import {getFormDataImages} from '@/utils/imageFile';
-import useMutateImages from '@/hook/queries/useMutateImages';
-import useImagePicker from '@/hook/useImagePicker';
-import PreviewImageList from '@/components/PreviewImageList';
-import useMutateCreatePost from '@/hook/queries/useMutateCreatePost';
-import {useNavigation} from '@react-navigation/native';
 
 type Props = StackScreenProps<MapStackParamList, 'AddLocation'>;
 
@@ -138,6 +136,7 @@ function AddLocationsScreen({route}: Props) {
           <PreviewImageList
             imageUris={imagePicker.imageUris}
             onDelete={imagePicker.delete}
+            showDeleteButton={true}
           />
         </View>
       </ScrollView>
