@@ -22,4 +22,44 @@ async function getPosts(page = 1): Promise<Post[]> {
   return data;
 }
 
-export {createPost, getPost, getPosts};
+// 즐겨찾기 목록
+async function getFavoritePosts(page = 1): Promise<Post[]> {
+  const {data} = await axiosInstance.get(`/favorites?page=${page}`);
+
+  return data;
+}
+
+// 포스트 삭제
+async function deletePost(id: number) {
+  const {data} = await axiosInstance.delete(`/posts/${id}`);
+
+  return data;
+}
+
+type RequestUpdatePost = {
+  id: number;
+  body: Omit<Post, 'id' | 'longitude' | 'latitude' | 'address'>;
+};
+
+// 포스트 수정
+async function updatePost({id, body}: RequestUpdatePost): Promise<Post> {
+  const {data} = await axiosInstance.patch(`/posts/${id}`, body);
+
+  return data;
+}
+
+async function updateFavoritePost(id: number): Promise<number> {
+  const {data} = await axiosInstance.post(`/favorites/${id}`);
+
+  return data;
+}
+
+export {
+  createPost,
+  getPost,
+  getPosts,
+  deletePost,
+  updatePost,
+  updateFavoritePost,
+  getFavoritePosts,
+};

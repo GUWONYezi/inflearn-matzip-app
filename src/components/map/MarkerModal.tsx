@@ -14,6 +14,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 interface MarkerModalProps {
   markerId: number;
@@ -22,16 +23,30 @@ interface MarkerModalProps {
 }
 
 function MarkerModal({markerId, isVisible, hide}: MarkerModalProps) {
+  const navigation = useNavigation();
+
   const {data: post, isPending, isError} = useGetPost(markerId);
 
   if (isPending || isError) {
     return <></>;
   }
 
+  const handlePressModal = () => {
+    navigation.navigate('Feed', {
+      screen: 'FeedDetail',
+      params: {
+        id: post.id,
+      },
+      initial: false, // 초기화면으로 되돌아가는 걸 off
+    });
+
+    hide();
+  };
+
   return (
     <Modal visible={isVisible} transparent animationType="slide">
       <SafeAreaView style={styles.background} onTouchEnd={hide}>
-        <Pressable style={styles.cardContainer}>
+        <Pressable style={styles.cardContainer} onPress={handlePressModal}>
           <View style={styles.cardInner}>
             <View style={styles.cardAlign}>
               {post?.imageUris.length > 0 && (

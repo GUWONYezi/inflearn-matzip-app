@@ -1,7 +1,14 @@
 import {baseUrl} from '@/api/axios';
 import {colors} from '@/constants/colors';
 import {ImageUri} from '@/types/domain';
+import {FeedStackParamList} from '@/types/navigation';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import React from 'react';
 import {Image, Platform, Pressable, StyleSheet, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -17,11 +24,21 @@ function PreviewImageList({
   onDelete,
   showDeleteButton = false,
 }: PreviewImageListProps) {
+  const navigation = useNavigation<NavigationProp<FeedStackParamList>>();
+  const route = useRoute<RouteProp<FeedStackParamList>>();
+
+  const handlePressImage = (index: number) => {
+    navigation.navigate('ImageZoom', {id: route.params?.id, index: index});
+  };
+
   return (
     <ScrollView horizontal contentContainerStyle={styles.contentContainer}>
-      {imageUris.map(({uri}) => {
+      {imageUris.map(({uri}, index) => {
         return (
-          <Pressable key={uri} style={styles.imageContainer}>
+          <Pressable
+            key={uri}
+            style={styles.imageContainer}
+            onPress={() => handlePressImage(index)}>
             <Image
               style={styles.image}
               source={{
