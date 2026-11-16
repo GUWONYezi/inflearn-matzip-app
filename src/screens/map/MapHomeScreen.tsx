@@ -114,7 +114,7 @@ function MapHomeScreen() {
         }>
         {markers.map(({id, color, score, ...coordinate}) => (
           <CustomMarker
-            key={id}
+            key={`${id}_${color}_${score}`}
             color={color}
             score={score}
             coordinate={coordinate}

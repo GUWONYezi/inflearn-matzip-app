@@ -5,10 +5,14 @@ import {useState} from 'react';
 import {ImageUri} from '@/types/domain';
 import Toast from 'react-native-toast-message';
 
-function useImagePicker() {
+interface UseImagePickerProps {
+  initiaImages: ImageUri[];
+}
+
+function useImagePicker({initiaImages}: UseImagePickerProps) {
   // 이미지 서버에 업로드 api
   const uploadImages = useMutateImages();
-  const [imageUris, setImageUris] = useState<ImageUri[]>([]);
+  const [imageUris, setImageUris] = useState<ImageUri[]>(initiaImages);
 
   const addImageUris = (uris: string[]) => {
     setImageUris(prev => [...prev, ...uris.map(uri => ({uri}))]);

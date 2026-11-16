@@ -1,11 +1,16 @@
 import {baseUrl} from '@/api/axios';
 import CustomButton from '@/components/common/CustomButton';
 import PreviewImageList from '@/components/common/PreviewImageList';
+import FeedDetailActionSheet from '@/components/feed/FeedDetailActionSheet';
 import {colors} from '@/constants/colors';
 import useGetPost from '@/hook/queries/useGetPost';
+import useMutateFavoritePost from '@/hook/queries/useMutateFavoritePost';
+import useModal from '@/hook/useModal';
+import useLocationStore from '@/store/location';
 import {FeedStackParamList} from '@/types/navigation';
 import {getDateWithSeparator} from '@/utils/date';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import {useNavigation} from '@react-navigation/native';
 import {StackScreenProps} from '@react-navigation/stack';
 import React from 'react';
 import {
@@ -23,20 +28,44 @@ type Props = StackScreenProps<FeedStackParamList, 'FeedDetail'>;
 
 function FeedDetailScreen({route}: Props) {
   const {id} = route.params;
+  const navigation = useNavigation();
   const inset = useSafeAreaInsets();
   const {data: post, isPending, isError} = useGetPost(id); // 포스트 상세 정보 get
+  const {setMoveLocation} = useLocationStore();
+  const detailAction = useModal();
+  const favoriteMutate = useMutateFavoritePost();
 
   if (isPending || isError) {
     // 데이터가 아직 준비되지 않았거나 에러가 났다면 빈값 return
     return <></>;
   }
 
+  // 위치 이동 핸들러
+  const handlePressLocation = () => {
+    const {latitude, longitude} = post;
+    setMoveLocation({latitude, longitude});
+
+    navigation.navigate('Map', {
+      screen: 'MapHome',
+    });
+  };
+
   return (
     <>
       {/* 헤더 영역 */}
       <View style={[styles.header, {top: inset.top}]}>
-        <Ionicons name="chevron-back" size={30} color={colors.WHITE} />
-        <Ionicons name="ellipsis-vertical" size={30} color={colors.WHITE} />
+        <Ionicons
+          name="chevron-back"
+          size={30}
+          color={colors.WHITE}
+          onPress={navigation.goBack}
+        />
+        <Ionicons
+          name="ellipsis-vertical"
+          size={30}
+          color={colors.WHITE}
+          onPress={detailAction.show}
+        />
       </View>
       <ScrollView>
         {/* 이미지 영역 */}
@@ -114,11 +143,29 @@ function FeedDetailScreen({route}: Props) {
       <View style={[styles.bottomContainer, {paddingBottom: inset.bottom}]}>
         <CustomButton
           size="small"
-          label={<Ionicons name="star" size={25} color={colors.WHITE} />}
+          label={
+            <Ionicons
+              name="star"
+              size={25}
+              color={post.isFavorite ? colors.YELLOW_500 : colors.WHITE}
+            />
+          }
           style={{paddingHorizontal: 5}}
+          onPress={() => favoriteMutate.mutate(post.id)}
         />
-        <CustomButton size="small" label="위치보기" style={{width: '50%'}} />
+        <CustomButton
+          size="small"
+          label="위치보기"
+          style={{width: '50%'}}
+          onPress={handlePressLocation}
+        />
       </View>
+
+      <FeedDetailActionSheet
+        id={post.id}
+        isVisible={detailAction.isVisible}
+        hideAction={detailAction.hide}
+      />
     </>
   );
 }

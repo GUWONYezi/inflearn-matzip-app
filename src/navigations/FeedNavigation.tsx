@@ -5,6 +5,11 @@ import FeedFavoriteScreen from '@/screens/feed/FeedFavoriteScreen';
 import EditLocationScreen from '@/screens/feed/EditLocationScreen';
 import {colors} from '@/constants/colors';
 import DrawerButton from '@/components/common/DrawerButton';
+import ImageZoomScreen from '@/screens/feed/ImageZoomScreen';
+import {Pressable} from 'react-native';
+import Ionicons from '@react-native-vector-icons/ionicons';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {FeedStackParamList} from '@/types/navigation';
 
 export const FeedStack = createStackNavigator({
   screenOptions: {
@@ -25,10 +30,17 @@ export const FeedStack = createStackNavigator({
   screens: {
     FeedList: {
       screen: FeedListScreen,
-      options: {
+      options: ({navigation}) => ({
         title: '피드',
         headerLeft: () => <DrawerButton />,
-      },
+        headerRight: () => (
+          <Pressable
+            style={{paddingHorizontal: 12}}
+            onPress={() => navigation.navigate('FeedFavorite')}>
+            <Ionicons name="star" size={25} color={colors.PINK_700} />
+          </Pressable>
+        ),
+      }),
     },
     FeedDetail: {
       screen: FeedDetailScreen,
@@ -38,9 +50,29 @@ export const FeedStack = createStackNavigator({
     },
     FeedFavorite: {
       screen: FeedFavoriteScreen,
+      options: ({navigation}) => ({
+        title: '즐겨찾기',
+        headerLeft: () => (
+          <Ionicons
+            name="chevron-back"
+            size={30}
+            color={colors.BLACK}
+            onPress={() => navigation.navigate('FeedList')}
+          />
+        ),
+      }),
     },
     EditLocation: {
       screen: EditLocationScreen,
+      options: {
+        title: '장소수정',
+      },
+    },
+    ImageZoom: {
+      screen: ImageZoomScreen,
+      options: {
+        headerShown: false,
+      },
     },
   },
 });

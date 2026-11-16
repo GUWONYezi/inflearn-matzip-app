@@ -52,7 +52,7 @@ function AddLocationsScreen({route}: Props) {
   const [openDate, setOpenDate] = useState<boolean>(false);
 
   // 이미지 선택 후 이벤트
-  const imagePicker = useImagePicker();
+  const imagePicker = useImagePicker({initiaImages: []});
 
   // 저장 이벤트
   const handleSubmit = () => {
